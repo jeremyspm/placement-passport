@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#0e1420"/>
+<title>Placement Passport — BN Clinical Portfolio</title>
+<style>
+:root{
+  --bg:#0e1420; --bg2:#141c2b; --card:#182133; --card2:#1e2941;
+  --line:#27324a; --line2:#33405c;
+  --tx:#e8eef7; --tx2:#9fb0c8; --tx3:#6d7f9c;
+  --acc:#9b8cff; --acc2:#7a63e8;
+  --good:#39d98a; --hard:#ffce54; --miss:#ff6b6b;
+  --gGood:#123a2a; --gHard:#3a3413; --gMiss:#3a1a1a;
+  --shadow:0 10px 40px rgba(0,0,0,.45);
+  --r:16px; --maxw:760px;
+}
+html[data-theme="light"]{
+  --bg:#eef2f8; --bg2:#e3e9f3; --card:#ffffff; --card2:#f4f7fc;
+  --line:#dbe3ef; --line2:#c7d3e6;
+  --tx:#16202f; --tx2:#4a5a72; --tx3:#7d8ca5;
+  --acc:#6a52e8; --acc2:#5540c2;
+  --good:#128a55; --hard:#a9791a; --miss:#c53b3b;
+  --gGood:#dcf7ea; --gHard:#faf0d2; --gMiss:#fbe0e0;
+  --shadow:0 8px 30px rgba(30,50,90,.14);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;height:100%;overscroll-behavior-y:none}
+body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--tx);
+  font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;min-height:100%;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:14px 16px 120px}
+button{font-family:inherit;cursor:pointer;border:none;color:inherit;background:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
+.hidden{display:none !important}
+b{font-variant-numeric:tabular-nums}
+header{display:flex;align-items:center;gap:10px;margin:6px 0 12px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;line-height:1.15;margin-right:auto}
+.brand b{font-size:15px}
+.brand span{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.2px}
+.iconbtn{width:38px;height:38px;border-radius:10px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--tx2);transition:.15s}
+.iconbtn:hover{border-color:var(--line2);color:var(--tx)}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{padding:7px 11px;border-radius:8px;font-size:12.5px;color:var(--tx2);font-weight:600;white-space:nowrap;transition:.12s}
+.seg button.on{background:var(--acc);color:#fff}
+.seg button:not(.on):hover{color:var(--tx);background:var(--card2)}
+.controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;position:relative;animation:pop .28s cubic-bezier(.2,.9,.3,1.2);margin-bottom:12px}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+.stat .n{font-size:24px;font-weight:800}
+.stat .l{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.prog{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:14px}
+.prog .row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx2);margin-bottom:8px}
+.prog .row b{color:var(--tx)}
+.prog .row .ed{margin-left:auto;font-size:12px;color:var(--tx3);cursor:pointer}
+.prog .row .ed:hover{color:var(--acc)}
+.bar{height:9px;border-radius:6px;background:var(--card2);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .5s cubic-bezier(.2,.8,.2,1)}
+h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);margin:20px 0 9px;display:flex;align-items:center}
+h2.sec .add{margin-left:auto;font-size:12px;letter-spacing:0;text-transform:none;color:var(--acc);cursor:pointer;font-weight:700}
+h2.sec .add:hover{text-decoration:underline}
+.row-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 14px;font-size:14px;margin-bottom:8px}
+.row-item .main{flex:1;min-width:0}
+.row-item .main .t{font-weight:700}
+.row-item .main .s{font-size:12.5px;color:var(--tx3);margin-top:1px}
+.row-item .val{font-weight:800;font-size:14px;white-space:nowrap}
+.row-item .mini{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--tx3);border:1px solid transparent}
+.row-item .mini:hover{background:var(--card2);border-color:var(--line2);color:var(--tx)}
+.row-item.sel{border-color:var(--acc)}
+.empty{color:var(--tx3);text-align:center;padding:30px 10px;font-size:14px}
+.btn{padding:12px 18px;border-radius:12px;font-size:14px;font-weight:800;transition:.12s}
+.btn.primary{background:var(--acc);color:#fff}
+.btn.primary:hover{background:var(--acc2)}
+.btn.ghost{background:var(--card2);border:1px solid var(--line2);color:var(--tx2)}
+.btn.ghost:hover{color:var(--tx);border-color:var(--acc)}
+.btnrow{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+.btnrow .btn{flex:1}
+.danger{color:var(--miss) !important;border-color:rgba(255,107,107,.4) !important}
+/* skills */
+.skillcat{margin-bottom:4px}
+.skill{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 13px;font-size:14px;margin-bottom:7px;cursor:pointer;transition:.15s}
+.skill:hover{border-color:var(--line2)}
+.skill .st{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--card2);border:1px solid var(--line2);color:var(--tx3)}
+.skill.s1{border-color:rgba(255,206,84,.4)} .skill.s1 .st{background:var(--gHard);border-color:var(--hard);color:var(--hard)}
+.skill.s2{border-color:rgba(57,217,138,.45);background:linear-gradient(90deg,rgba(57,217,138,.07),transparent)}
+.skill.s2 .st{background:var(--good);border-color:var(--good);color:#04120b}
+.skill .nm{flex:1}
+.skill .dt{font-size:11.5px;color:var(--tx3)}
+.skill .mini{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--tx3)}
+.skill .mini:hover{background:var(--card2);color:var(--miss)}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--tx3);margin-bottom:12px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--card2);border:1px solid var(--line2)}
+.legend i.y{background:var(--gHard);border-color:var(--hard)} .legend i.g{background:var(--good);border-color:var(--good)}
+/* reflections */
+.refl{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden}
+.refl .rhead{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.refl .rhead .t{flex:1;font-weight:700;font-size:14.5px}
+.refl .rhead .d{font-size:12px;color:var(--tx3);white-space:nowrap}
+.refl .rbody{padding:0 14px 13px;font-size:14px}
+.gstage{margin-bottom:10px}
+.gstage .gl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--acc);margin-bottom:2px}
+.gstage .gt{color:var(--tx2);line-height:1.55;white-space:pre-wrap}
+/* modal + forms */
+.modal{position:fixed;inset:0;background:rgba(5,9,16,.66);display:flex;align-items:flex-end;justify-content:center;z-index:50;animation:fade .18s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheet{background:var(--card);border:1px solid var(--line2);border-radius:18px 18px 0 0;max-width:var(--maxw);width:100%;max-height:88vh;overflow:auto;padding:20px 20px 30px;box-shadow:var(--shadow)}
+@media(min-width:700px){.modal{align-items:center;padding:20px}.sheet{border-radius:18px}}
+.sheet h3{margin:0 0 14px;font-size:17px}
+.f{margin-bottom:12px}
+.f label{display:block;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--tx3);margin-bottom:5px}
+.f label small{font-weight:500;text-transform:none;letter-spacing:0;color:var(--tx3)}
+.f input,.f select,.f textarea{width:100%;background:var(--card2);border:1.5px solid var(--line2);border-radius:10px;padding:11px 13px;color:var(--tx);font:inherit;outline:none;color-scheme:dark}
+html[data-theme="light"] .f input,html[data-theme="light"] .f select,html[data-theme="light"] .f textarea{color-scheme:light}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--acc)}
+.f textarea{min-height:74px;resize:vertical;line-height:1.5}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.foot{margin-top:26px;text-align:center;font-size:11.5px;color:var(--tx3)}
+/* print report */
+#report{display:none}
+@media print{
+  body{background:#fff;color:#000;font-size:12px;padding:0}
+  .wrap,.modal{display:none !important}
+  #report{display:block;padding:6mm}
+  #report h1{font-size:20px;margin:0 0 2px}
+  #report .sub{color:#555;margin:0 0 14px;font-size:12px}
+  #report h2{font-size:14px;border-bottom:1.5px solid #000;padding-bottom:3px;margin:18px 0 8px}
+  #report h3{font-size:12.5px;margin:12px 0 4px}
+  #report table{width:100%;border-collapse:collapse;font-size:11px}
+  #report th,#report td{border:1px solid #999;padding:4px 7px;text-align:left;vertical-align:top}
+  #report th{background:#eee}
+  #report .gsl{font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+  #report .gst{white-space:pre-wrap;margin:1px 0 4px}
+  #report .refl-block{page-break-inside:avoid;margin-bottom:10px;border:1px solid #bbb;border-radius:4px;padding:8px 10px}
+  #report .sig{margin-top:26px;display:flex;gap:40px}
+  #report .sig div{flex:1;border-top:1px solid #000;padding-top:4px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><b>Placement Passport</b><span>BN clinical portfolio</span></div>
+    <button class="iconbtn" id="btnExport" title="Export / backup">⇩</button>
+    <button class="iconbtn" id="btnTheme" title="Theme">◐</button>
+  </header>
+  <div class="controls">
+    <div class="seg" id="nav">
+      <button data-v="dash" class="on">Dashboard</button>
+      <button data-v="hours">Hours</button>
+      <button data-v="skills">Skills</button>
+      <button data-v="refl">Reflections</button>
+    </div>
+  </div>
+  <div id="view"></div>
+  <div class="foot">100% offline · data lives on this device — back it up from ⇩ before changing phones</div>
+</div>
+<div id="modal" class="modal hidden"><div class="sheet" id="sheet"></div></div>
+<div id="report"></div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const today=()=>new Date().toISOString().slice(0,10);
+const fmtD=d=>d? new Date(d+'T00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}) : '—';
+
+/* ---------- default skill framework (fully editable in-app) ---------- */
+const DEFAULT_SKILLS=[
+  ['Assessment','Vital signs (TPR, BP, SpO₂)'],['Assessment','Pain assessment'],['Assessment','Head-to-toe assessment'],['Assessment','EWS charting & escalation'],['Assessment','Blood glucose monitoring'],
+  ['Personal cares','Assisted hygiene cares'],['Personal cares','Mobility & safe transfers'],['Personal cares','Pressure injury prevention'],['Personal cares','Nutrition & feeding assistance'],['Personal cares','Continence cares'],
+  ['Medication','Oral medication administration (supervised)'],['Medication','Subcutaneous injection'],['Medication','Intramuscular injection'],['Medication','Medication calculations at the bedside'],
+  ['Infection control','Hand hygiene (5 moments)'],['Infection control','PPE donning & doffing'],['Infection control','Aseptic technique'],
+  ['Documentation','Progress notes'],['Documentation','Care plan contribution'],['Documentation','ISBAR handover'],
+  ['Communication','Therapeutic communication'],['Communication','Culturally safe care'],['Communication','Working with whānau / family'],
+  ['Emergency','BLS / CPR competency'],['Emergency','Recognising & reporting deterioration'],
+];
+const GIBBS=[
+  ['desc','Description','What happened? Just the facts — no judgement yet.'],
+  ['feelings','Feelings','What were you thinking and feeling at the time?'],
+  ['evaluation','Evaluation','What was good and what was difficult about it?'],
+  ['analysis','Analysis','Why did it play out that way? Link to theory, policy, or what you\'ve been taught.'],
+  ['conclusion','Conclusion','What else could you have done? What did you learn?'],
+  ['action','Action plan','If it happened again, what would you do? What will you practice or read up on?'],
+];
+
+/* ---------- state ---------- */
+const KEY='placementpassport.v1';
+let S=load();
+function load(){
+  try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.placements) return s; }catch(e){}
+  return {theme:'dark',student:'',target:1100,placements:[],shifts:[],refl:[],curP:null,
+    skills:DEFAULT_SKILLS.map(([cat,name])=>({id:uid()+name.length,cat,name,st:0,date:null}))};
+}
+function save(){ localStorage.setItem(KEY,JSON.stringify(S)); }
+
+/* ---------- hours math ---------- */
+function shiftMins(sh){
+  const [h1,m1]=sh.start.split(':').map(Number), [h2,m2]=sh.end.split(':').map(Number);
+  let mins=(h2*60+m2)-(h1*60+m1);
+  if(mins<=0) mins+=24*60;                       // overnight shift
+  return Math.max(0, mins-(sh.brk||0));
+}
+const hrs=m=>Math.round(m/60*10)/10;
+const hmm=m=>`${Math.floor(m/60)}h ${String(m%60).padStart(2,'0')}m`;
+const placementMins=pid=>S.shifts.filter(s=>s.pid===pid).reduce((a,s)=>a+shiftMins(s),0);
+const totalMins=()=>S.shifts.reduce((a,s)=>a+shiftMins(s),0);
+const pName=pid=>{const p=S.placements.find(p=>p.id===pid);return p?p.name:'—';};
+
+/* ---------- nav ---------- */
+let VIEW='dash';
+const view=$('#view');
+function nav(v){ VIEW=v; $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  ({dash:renderDash,hours:renderHours,skills:renderSkills,refl:renderRefl})[v]();
+}
+$$('#nav button').forEach(b=>b.onclick=()=>nav(b.dataset.v));
+
+/* ---------- dashboard ---------- */
+function renderDash(){
+  const tm=totalMins(), signed=S.skills.filter(s=>s.st===2).length;
+  const pct=Math.min(100, S.target? tm/60/S.target*100 : 0);
+  view.innerHTML=`
+    <div class="prog">
+      <div class="row">🎓 <b>${hrs(tm)}</b>&nbsp;of ${S.target} clinical hours
+        <span class="ed" id="edTarget">edit target</span></div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+    </div>
+    <div class="statgrid">
+      <div class="stat"><div class="n">${S.placements.length}</div><div class="l">placements</div></div>
+      <div class="stat"><div class="n">${signed}/${S.skills.length}</div><div class="l">skills signed off</div></div>
+      <div class="stat"><div class="n">${S.refl.length}</div><div class="l">reflections</div></div>
+    </div>
+    <h2 class="sec">Placements <span class="add" id="addP">+ new placement</span></h2>
+    ${S.placements.length? S.placements.slice().reverse().map(p=>`
+      <div class="row-item">
+        <div class="main"><div class="t">${esc(p.name)}</div>
+        <div class="s">${esc(p.area||'')}${p.area?' · ':''}${fmtD(p.start)}${p.end?' → '+fmtD(p.end):' → ongoing'}${p.preceptor?' · preceptor: '+esc(p.preceptor):''}</div></div>
+        <span class="val">${hrs(placementMins(p.id))} h</span>
+        <button class="mini" data-ed="${p.id}" title="Edit">✎</button>
+      </div>`).join('') : `<div class="empty">No placements yet — add your first one and start logging from day one. Future-you (and your NP application) will be grateful.</div>`}`;
+  $('#addP').onclick=()=>placementForm();
+  $('#edTarget').onclick=()=>targetForm();
+  $$('[data-ed]').forEach(b=>b.onclick=()=>placementForm(S.placements.find(p=>p.id===b.dataset.ed)));
+}
+function targetForm(){
+  openSheet(`<h3>Clinical hours target</h3>
+    <div class="f"><label>Target hours <small>(NZ BN programmes require 1100 minimum)</small></label>
+    <input id="fT" type="number" value="${S.target}" min="1"/></div>
+    <div class="btnrow"><button class="btn primary" id="ok">Save</button></div>`);
+  $('#ok').onclick=()=>{ S.target=Math.max(1,+$('#fT').value||1100); save(); closeSheet(); renderDash(); };
+}
+function placementForm(p){
+  openSheet(`<h3>${p?'Edit':'New'} placement</h3>
+    <div class="f"><label>Ward / facility</label><input id="fN" value="${esc(p?.name||'')}" placeholder="e.g. Ward 5 Medical, City Hospital"/></div>
+    <div class="f"><label>Practice area</label><input id="fA" value="${esc(p?.area||'')}" placeholder="e.g. aged care · acute medical · mental health"/></div>
+    <div class="f2">
+      <div class="f"><label>Start date</label><input id="fS" type="date" value="${p?.start||today()}"/></div>
+      <div class="f"><label>End date <small>(blank = ongoing)</small></label><input id="fE" type="date" value="${p?.end||''}"/></div>
+    </div>
+    <div class="f"><label>Preceptor / CTA</label><input id="fP" value="${esc(p?.preceptor||'')}" placeholder="name"/></div>
+    <div class="btnrow"><button class="btn primary" id="ok">Save</button>${p?`<button class="btn ghost danger" id="del">Delete</button>`:''}</div>`);
+  $('#ok').onclick=()=>{
+    const name=$('#fN').value.trim(); if(!name){$('#fN').focus();return;}
+    if(p){ Object.assign(p,{name,area:$('#fA').value.trim(),start:$('#fS').value,end:$('#fE').value,preceptor:$('#fP').value.trim()}); }
+    else { const np={id:uid(),name,area:$('#fA').value.trim(),start:$('#fS').value,end:$('#fE').value,preceptor:$('#fP').value.trim()};
+      S.placements.push(np); S.curP=np.id; }
+    save(); closeSheet(); nav(VIEW);
+  };
+  if(p) $('#del').onclick=()=>{ if(confirm(`Delete "${p.name}" AND its ${S.shifts.filter(s=>s.pid===p.id).length} logged shifts?`)){
+    S.placements=S.placements.filter(x=>x.id!==p.id); S.shifts=S.shifts.filter(s=>s.pid!==p.id);
+    if(S.curP===p.id)S.curP=null; save(); closeSheet(); nav(VIEW); } };
+}
+
+/* ---------- hours ---------- */
+function renderHours(){
+  if(!S.placements.length){ view.innerHTML=`<div class="empty">Add a placement on the Dashboard first — then log shifts here.</div>`; return; }
+  if(!S.curP||!S.placements.find(p=>p.id===S.curP)) S.curP=S.placements[S.placements.length-1].id;
+  const p=S.placements.find(p=>p.id===S.curP);
+  const shifts=S.shifts.filter(s=>s.pid===p.id).sort((a,b)=>b.date.localeCompare(a.date));
+  const mins=placementMins(p.id);
+  view.innerHTML=`
+    <div class="controls"><div class="seg">${S.placements.map(pp=>`<button data-p="${pp.id}" class="${pp.id===S.curP?'on':''}">${esc(pp.name)}</button>`).join('')}</div></div>
+    <div class="prog"><div class="row">⏱️ <b>${hmm(mins)}</b>&nbsp;(${hrs(mins)} h) on this placement</div>
+      <div class="bar"><i style="width:${Math.min(100,S.target?mins/60/S.target*100:0)}%"></i></div></div>
+    <h2 class="sec">Shifts <span class="add" id="addS">+ log shift</span></h2>
+    ${shifts.length? shifts.map(s=>`
+      <div class="row-item">
+        <div class="main"><div class="t">${fmtD(s.date)}</div>
+        <div class="s">${s.start} – ${s.end}${s.brk?` · ${s.brk} min break`:''}${s.note?` · ${esc(s.note)}`:''}</div></div>
+        <span class="val">${hmm(shiftMins(s))}</span>
+        <button class="mini" data-del="${s.id}" title="Delete">🗑</button>
+      </div>`).join('') : `<div class="empty">No shifts logged yet. Log them the same day — reconstructing a roster later is misery.</div>`}`;
+  $$('[data-p]').forEach(b=>b.onclick=()=>{S.curP=b.dataset.p;save();renderHours();});
+  $('#addS').onclick=()=>shiftForm(p);
+  $$('[data-del]').forEach(b=>b.onclick=()=>{ if(confirm('Delete this shift?')){ S.shifts=S.shifts.filter(s=>s.id!==b.dataset.del); save(); renderHours(); } });
+}
+function shiftForm(p){
+  const last=S.shifts.filter(s=>s.pid===p.id).slice(-1)[0];
+  openSheet(`<h3>Log shift — ${esc(p.name)}</h3>
+    <div class="f"><label>Date</label><input id="fD" type="date" value="${today()}"/></div>
+    <div class="f3">
+      <div class="f"><label>Start</label><input id="fS" type="time" value="${last?.start||'07:00'}"/></div>
+      <div class="f"><label>End</label><input id="fE" type="time" value="${last?.end||'15:30'}"/></div>
+      <div class="f"><label>Break (min)</label><input id="fB" type="number" value="${last?.brk??30}" min="0" step="5"/></div>
+    </div>
+    <div class="f"><label>Note <small>(optional)</small></label><input id="fN" placeholder="e.g. night duty, sim day, community visit"/></div>
+    <div class="btnrow"><button class="btn primary" id="ok">Save shift</button></div>`);
+  $('#ok').onclick=()=>{
+    if(!$('#fD').value||!$('#fS').value||!$('#fE').value) return;
+    S.shifts.push({id:uid(),pid:p.id,date:$('#fD').value,start:$('#fS').value,end:$('#fE').value,brk:+$('#fB').value||0,note:$('#fN').value.trim()});
+    save(); closeSheet(); renderHours();
+  };
+}
+
+/* ---------- skills ---------- */
+function renderSkills(){
+  const cats=[...new Set(S.skills.map(s=>s.cat))];
+  view.innerHTML=`
+    <div class="legend"><span><i></i> not yet</span><span><i class="y"></i> practiced</span><span><i class="g"></i> signed off</span><span style="margin-left:auto">tap a skill to cycle</span></div>
+    ${cats.map(cat=>`<div class="skillcat"><h2 class="sec">${esc(cat)}</h2>
+      ${S.skills.filter(s=>s.cat===cat).map(s=>`
+        <div class="skill s${s.st}" data-id="${s.id}">
+          <span class="st">${s.st===2?'✓':s.st===1?'…':''}</span>
+          <span class="nm">${esc(s.name)}</span>
+          ${s.st===2&&s.date?`<span class="dt">${fmtD(s.date)}</span>`:''}
+          <button class="mini" data-rm="${s.id}" title="Remove">✕</button>
+        </div>`).join('')}</div>`).join('')}
+    <h2 class="sec">&nbsp;<span class="add" id="addSk">+ add custom skill</span></h2>`;
+  $$('.skill').forEach(el=>el.onclick=e=>{
+    if(e.target.dataset.rm) return;
+    const s=S.skills.find(x=>x.id===el.dataset.id);
+    s.st=(s.st+1)%3; s.date=s.st===2?today():null; save(); renderSkills();
+  });
+  $$('[data-rm]').forEach(b=>b.onclick=e=>{ e.stopPropagation();
+    const s=S.skills.find(x=>x.id===b.dataset.rm);
+    if(confirm(`Remove "${s.name}" from your skills list?`)){ S.skills=S.skills.filter(x=>x.id!==s.id); save(); renderSkills(); } });
+  $('#addSk').onclick=()=>{
+    const cats=[...new Set(S.skills.map(s=>s.cat))];
+    openSheet(`<h3>Add skill</h3>
+      <div class="f"><label>Category</label><select id="fC">${cats.map(c=>`<option>${esc(c)}</option>`).join('')}<option value="__new">+ new category…</option></select></div>
+      <div class="f hidden" id="ncWrap"><label>New category name</label><input id="fNC"/></div>
+      <div class="f"><label>Skill</label><input id="fN" placeholder="e.g. IV cannula care"/></div>
+      <div class="btnrow"><button class="btn primary" id="ok">Add</button></div>`);
+    $('#fC').onchange=()=>$('#ncWrap').classList.toggle('hidden',$('#fC').value!=='__new');
+    $('#ok').onclick=()=>{
+      const name=$('#fN').value.trim(); if(!name){$('#fN').focus();return;}
+      const cat=$('#fC').value==='__new' ? ($('#fNC').value.trim()||'Other') : $('#fC').value;
+      S.skills.push({id:uid(),cat,name,st:0,date:null}); save(); closeSheet(); renderSkills();
+    };
+  };
+}
+
+/* ---------- reflections ---------- */
+function renderRefl(){
+  view.innerHTML=`
+    <h2 class="sec" style="margin-top:4px">Reflections (Gibbs cycle) <span class="add" id="addR">+ new reflection</span></h2>
+    ${S.refl.length? S.refl.slice().reverse().map(r=>`
+      <div class="refl">
+        <div class="rhead" data-i="${r.id}">
+          <span>📝</span><span class="t">${esc(r.title)}</span>
+          <span class="d">${fmtD(r.date)}${r.pid?' · '+esc(pName(r.pid)):''}</span>
+        </div>
+        <div class="rbody hidden" id="rb-${r.id}">
+          ${GIBBS.filter(([k])=>r.g[k]).map(([k,label])=>`<div class="gstage"><div class="gl">${label}</div><div class="gt">${esc(r.g[k])}</div></div>`).join('')||'<div class="empty">Empty reflection.</div>'}
+          <div class="btnrow"><button class="btn ghost" data-edr="${r.id}">Edit</button><button class="btn ghost danger" data-delr="${r.id}">Delete</button></div>
+        </div>
+      </div>`).join('') : `<div class="empty">No reflections yet. One honest reflection per placement week is portfolio gold — and most schools require them anyway.</div>`}`;
+  $$('.rhead').forEach(h=>h.onclick=()=>$('#rb-'+h.dataset.i).classList.toggle('hidden'));
+  $('#addR').onclick=()=>reflForm();
+  $$('[data-edr]').forEach(b=>b.onclick=e=>{e.stopPropagation();reflForm(S.refl.find(r=>r.id===b.dataset.edr));});
+  $$('[data-delr]').forEach(b=>b.onclick=e=>{e.stopPropagation();
+    if(confirm('Delete this reflection permanently?')){ S.refl=S.refl.filter(r=>r.id!==b.dataset.delr); save(); renderRefl(); } });
+}
+function reflForm(r){
+  openSheet(`<h3>${r?'Edit':'New'} reflection</h3>
+    <div class="f2">
+      <div class="f"><label>Title</label><input id="fT" value="${esc(r?.title||'')}" placeholder="e.g. First medication round"/></div>
+      <div class="f"><label>Date</label><input id="fD" type="date" value="${r?.date||today()}"/></div>
+    </div>
+    <div class="f"><label>Placement</label><select id="fP"><option value="">—</option>${S.placements.map(p=>`<option value="${p.id}" ${r?.pid===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
+    ${GIBBS.map(([k,label,hint])=>`<div class="f"><label>${label} <small>— ${hint}</small></label><textarea id="g-${k}">${esc(r?.g?.[k]||'')}</textarea></div>`).join('')}
+    <div class="btnrow"><button class="btn primary" id="ok">Save reflection</button></div>`);
+  $('#ok').onclick=()=>{
+    const title=$('#fT').value.trim(); if(!title){$('#fT').focus();return;}
+    const g={}; GIBBS.forEach(([k])=>g[k]=$('#g-'+k).value.trim());
+    if(r){ Object.assign(r,{title,date:$('#fD').value,pid:$('#fP').value,g}); }
+    else S.refl.push({id:uid(),title,date:$('#fD').value,pid:$('#fP').value,g});
+    save(); closeSheet(); renderRefl();
+  };
+}
+
+/* ---------- export ---------- */
+$('#btnExport').onclick=()=>{
+  openSheet(`<h3>Export & backup</h3>
+    <div class="f"><label>Student name <small>(appears on the report)</small></label><input id="fSt" value="${esc(S.student)}" placeholder="your name"/></div>
+    <div class="btnrow"><button class="btn primary" id="pdf">🖨 Print / PDF report</button></div>
+    <div class="btnrow"><button class="btn ghost" id="bk">⇩ Download JSON backup</button>
+    <button class="btn ghost" id="im">⇧ Restore from backup</button></div>
+    <input type="file" id="imf" accept=".json" class="hidden"/>`);
+  $('#fSt').onchange=()=>{S.student=$('#fSt').value.trim();save();};
+  $('#pdf').onclick=()=>{ S.student=$('#fSt').value.trim(); save(); buildReport(); closeSheet(); setTimeout(()=>window.print(),80); };
+  $('#bk').onclick=()=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));
+    a.download=`placement-passport-backup-${today()}.json`; a.click();
+  };
+  $('#im').onclick=()=>$('#imf').click();
+  $('#imf').onchange=e=>{
+    const f=e.target.files[0]; if(!f)return;
+    const rd=new FileReader();
+    rd.onload=()=>{ try{
+        const d=JSON.parse(rd.result);
+        if(!d.placements||!d.skills) throw new Error('not a passport backup');
+        if(confirm(`Replace ALL current data with this backup (${d.placements.length} placements, ${d.shifts.length} shifts, ${d.refl.length} reflections)?`)){
+          S=d; save(); closeSheet(); nav('dash');
+        }
+      }catch(err){ alert('That file is not a valid Placement Passport backup.'); } };
+    rd.readAsText(f);
+  };
+};
+function buildReport(){
+  const tm=totalMins();
+  $('#report').innerHTML=`
+    <h1>Clinical Placement Portfolio</h1>
+    <p class="sub">${esc(S.student||'Student')} · Bachelor of Nursing · generated ${fmtD(today())} · Placement Passport</p>
+    <h2>Summary</h2>
+    <table><tr><th>Total clinical hours</th><th>Placements</th><th>Skills signed off</th><th>Reflections</th></tr>
+    <tr><td><b>${hrs(tm)} h</b> of ${S.target} h target</td><td>${S.placements.length}</td><td>${S.skills.filter(s=>s.st===2).length} / ${S.skills.length}</td><td>${S.refl.length}</td></tr></table>
+    <h2>Placements & hours</h2>
+    ${S.placements.map(p=>{
+      const sh=S.shifts.filter(s=>s.pid===p.id).sort((a,b)=>a.date.localeCompare(b.date));
+      return `<h3>${esc(p.name)} — ${esc(p.area||'')} (${fmtD(p.start)}${p.end?' → '+fmtD(p.end):' → ongoing'})${p.preceptor?' · Preceptor: '+esc(p.preceptor):''} — <b>${hrs(placementMins(p.id))} h</b></h3>
+      ${sh.length?`<table><tr><th>Date</th><th>Shift</th><th>Break</th><th>Hours</th><th>Note</th></tr>
+        ${sh.map(s=>`<tr><td>${fmtD(s.date)}</td><td>${s.start}–${s.end}</td><td>${s.brk||0} min</td><td>${hmm(shiftMins(s))}</td><td>${esc(s.note||'')}</td></tr>`).join('')}</table>`:'<p>No shifts logged.</p>'}`;
+    }).join('')||'<p>No placements recorded.</p>'}
+    <h2>Skills</h2>
+    <table><tr><th>Category</th><th>Skill</th><th>Status</th><th>Date signed off</th></tr>
+    ${S.skills.map(s=>`<tr><td>${esc(s.cat)}</td><td>${esc(s.name)}</td><td>${s.st===2?'Signed off':s.st===1?'Practiced':'Not yet'}</td><td>${s.st===2?fmtD(s.date):''}</td></tr>`).join('')}</table>
+    <h2>Reflections (Gibbs reflective cycle)</h2>
+    ${S.refl.map(r=>`<div class="refl-block"><h3>${esc(r.title)} — ${fmtD(r.date)}${r.pid?' · '+esc(pName(r.pid)):''}</h3>
+      ${GIBBS.filter(([k])=>r.g[k]).map(([k,l])=>`<div class="gsl">${l}</div><div class="gst">${esc(r.g[k])}</div>`).join('')}</div>`).join('')||'<p>No reflections recorded.</p>'}
+    <div class="sig"><div>Student signature / date</div><div>Preceptor / lecturer signature / date</div></div>`;
+}
+
+/* ---------- modal & theme ---------- */
+function openSheet(html){ $('#sheet').innerHTML=`<button style="float:right;font-size:18px;color:var(--tx3);padding:2px 8px" id="mx">✕</button>`+html;
+  $('#modal').classList.remove('hidden'); $('#mx').onclick=closeSheet; }
+function closeSheet(){ $('#modal').classList.add('hidden'); }
+$('#modal').onclick=e=>{ if(e.target.id==='modal') closeSheet(); };
+function applyTheme(){ document.documentElement.setAttribute('data-theme',S.theme); }
+$('#btnTheme').onclick=()=>{S.theme=S.theme==='dark'?'light':'dark';save();applyTheme();};
+applyTheme();
+nav('dash');
+</script>
+</body>
+</html>
