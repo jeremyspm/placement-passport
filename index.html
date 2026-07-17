@@ -72,6 +72,8 @@ h2.sec .add:hover{text-decoration:underline}
 .row-item .mini:hover{background:var(--card2);border-color:var(--line2);color:var(--tx)}
 .row-item.sel{border-color:var(--acc)}
 .empty{color:var(--tx3);text-align:center;padding:30px 10px;font-size:14px}
+.warnbar{display:flex;align-items:center;gap:10px;background:var(--gHard);border:1px solid rgba(255,206,84,.5);border-radius:11px;padding:10px 14px;font-size:13px;margin-bottom:12px;line-height:1.45}
+.warnbar button{margin-left:auto;padding:7px 13px;border-radius:8px;background:var(--hard);color:#231a03;font-weight:800;font-size:12px;white-space:nowrap;flex:0 0 auto}
 .btn{padding:12px 18px;border-radius:12px;font-size:14px;font-weight:800;transition:.12s}
 .btn.primary{background:var(--acc);color:#fff}
 .btn.primary:hover{background:var(--acc2)}
@@ -225,7 +227,11 @@ $$('#nav button').forEach(b=>b.onclick=()=>nav(b.dataset.v));
 function renderDash(){
   const tm=totalMins(), signed=S.skills.filter(s=>s.st===2).length;
   const pct=Math.min(100, S.target? tm/60/S.target*100 : 0);
+  const hasData=S.shifts.length>0||S.refl.length>0||S.placements.length>0||S.skills.some(s=>s.st>0);
+  const days=S.lastBackup?Math.floor((Date.now()-S.lastBackup)/86400000):null;
+  const nag=hasData&&(days===null||days>30);
   view.innerHTML=`
+    ${nag?`<div class="warnbar">⚠️ ${days===null?'<b>No backup yet</b>':`Last backup <b>${days} days</b> ago`} — this data lives only on this device and browsers can evict it.<button id="nagBk">Back up now</button></div>`:''}
     <div class="prog">
       <div class="row">🎓 <b>${hrs(tm)}</b>&nbsp;of ${S.target} clinical hours
         <span class="ed" id="edTarget">edit target</span></div>
@@ -246,6 +252,7 @@ function renderDash(){
       </div>`).join('') : `<div class="empty">No placements yet — add your first one and start logging from day one. Future-you (and your NP application) will be grateful.</div>`}`;
   $('#addP').onclick=()=>placementForm();
   $('#edTarget').onclick=()=>targetForm();
+  const nb=$('#nagBk'); if(nb) nb.onclick=openExport;
   $$('[data-ed]').forEach(b=>b.onclick=()=>placementForm(S.placements.find(p=>p.id===b.dataset.ed)));
 }
 function targetForm(){
@@ -294,26 +301,30 @@ function renderHours(){
         <div class="main"><div class="t">${fmtD(s.date)}</div>
         <div class="s">${s.start} – ${s.end}${s.brk?` · ${s.brk} min break`:''}${s.note?` · ${esc(s.note)}`:''}</div></div>
         <span class="val">${hmm(shiftMins(s))}</span>
+        <button class="mini" data-eds="${s.id}" title="Edit">✎</button>
         <button class="mini" data-del="${s.id}" title="Delete">🗑</button>
       </div>`).join('') : `<div class="empty">No shifts logged yet. Log them the same day — reconstructing a roster later is misery.</div>`}`;
   $$('[data-p]').forEach(b=>b.onclick=()=>{S.curP=b.dataset.p;save();renderHours();});
   $('#addS').onclick=()=>shiftForm(p);
+  $$('[data-eds]').forEach(b=>b.onclick=()=>shiftForm(p,S.shifts.find(s=>s.id===b.dataset.eds)));
   $$('[data-del]').forEach(b=>b.onclick=()=>{ if(confirm('Delete this shift?')){ S.shifts=S.shifts.filter(s=>s.id!==b.dataset.del); save(); renderHours(); } });
 }
-function shiftForm(p){
-  const last=S.shifts.filter(s=>s.pid===p.id).slice(-1)[0];
-  openSheet(`<h3>Log shift — ${esc(p.name)}</h3>
-    <div class="f"><label>Date</label><input id="fD" type="date" value="${today()}"/></div>
+function shiftForm(p,sh){
+  const last=sh||S.shifts.filter(s=>s.pid===p.id).slice(-1)[0];
+  openSheet(`<h3>${sh?'Edit':'Log'} shift — ${esc(p.name)}</h3>
+    <div class="f"><label>Date</label><input id="fD" type="date" value="${sh?.date||today()}"/></div>
     <div class="f3">
       <div class="f"><label>Start</label><input id="fS" type="time" value="${last?.start||'07:00'}"/></div>
       <div class="f"><label>End</label><input id="fE" type="time" value="${last?.end||'15:30'}"/></div>
       <div class="f"><label>Break (min)</label><input id="fB" type="number" value="${last?.brk??30}" min="0" step="5"/></div>
     </div>
-    <div class="f"><label>Note <small>(optional)</small></label><input id="fN" placeholder="e.g. night duty, sim day, community visit"/></div>
+    <div class="f"><label>Note <small>(optional)</small></label><input id="fN" value="${esc(sh?.note||'')}" placeholder="e.g. night duty, sim day, community visit"/></div>
     <div class="btnrow"><button class="btn primary" id="ok">Save shift</button></div>`);
   $('#ok').onclick=()=>{
     if(!$('#fD').value||!$('#fS').value||!$('#fE').value) return;
-    S.shifts.push({id:uid(),pid:p.id,date:$('#fD').value,start:$('#fS').value,end:$('#fE').value,brk:+$('#fB').value||0,note:$('#fN').value.trim()});
+    const vals={date:$('#fD').value,start:$('#fS').value,end:$('#fE').value,brk:+$('#fB').value||0,note:$('#fN').value.trim()};
+    if(sh) Object.assign(sh,vals);
+    else S.shifts.push(Object.assign({id:uid(),pid:p.id},vals));
     save(); closeSheet(); renderHours();
   };
 }
@@ -396,7 +407,7 @@ function reflForm(r){
 }
 
 /* ---------- export ---------- */
-$('#btnExport').onclick=()=>{
+function openExport(){
   openSheet(`<h3>Export & backup</h3>
     <div class="f"><label>Student name <small>(appears on the report)</small></label><input id="fSt" value="${esc(S.student)}" placeholder="your name"/></div>
     <div class="btnrow"><button class="btn primary" id="pdf">🖨 Print / PDF report</button></div>
@@ -406,9 +417,11 @@ $('#btnExport').onclick=()=>{
   $('#fSt').onchange=()=>{S.student=$('#fSt').value.trim();save();};
   $('#pdf').onclick=()=>{ S.student=$('#fSt').value.trim(); save(); buildReport(); closeSheet(); setTimeout(()=>window.print(),80); };
   $('#bk').onclick=()=>{
+    S.lastBackup=Date.now(); save();
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));
     a.download=`placement-passport-backup-${today()}.json`; a.click();
+    if(VIEW==='dash') renderDash();
   };
   $('#im').onclick=()=>$('#imf').click();
   $('#imf').onchange=e=>{
@@ -423,7 +436,8 @@ $('#btnExport').onclick=()=>{
       }catch(err){ alert('That file is not a valid Placement Passport backup.'); } };
     rd.readAsText(f);
   };
-};
+}
+$('#btnExport').onclick=openExport;
 function buildReport(){
   const tm=totalMins();
   $('#report').innerHTML=`
