@@ -165,6 +165,10 @@ html[data-theme="light"] .f input,html[data-theme="light"] .f select,html[data-t
 <div id="modal" class="modal hidden"><div class="sheet" id="sheet"></div></div>
 <div id="report"></div>
 
+<!-- Optional cloud sync: dormant unless signed in at jeremyspm.github.io. App is fully offline-first without it. -->
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://jeremyspm.github.io/cloud/config.js"></script>
+<script src="https://jeremyspm.github.io/cloud/cloud.js"></script>
 <script>
 'use strict';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -195,6 +199,7 @@ const GIBBS=[
 /* ---------- state ---------- */
 const KEY='placementpassport.v1';
 let S=load();
+if(window.Cloud) Cloud.sync([KEY]);   // syncs this device's portfolio when signed in; no-op otherwise
 function load(){
   try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.placements) return s; }catch(e){}
   return {theme:'dark',student:'',target:1100,placements:[],shifts:[],refl:[],curP:null,
